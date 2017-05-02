@@ -20,12 +20,14 @@ package com.squareup.picasso;
 public enum MemoryPolicy {
 
   /** Skips memory cache lookup when processing a request. */
-  NO_CACHE(1 << 0),
+  //NO_CACHE是指图片加载时放弃在内存缓存中查找
+  NO_CACHE(1 << 0),//1
   /**
    * Skips storing the final result into memory cache. Useful for one-off requests
    * to avoid evicting other bitmaps from the cache.
    */
-  NO_STORE(1 << 1);
+  //NO_STORE是指图片加载完不缓存在内存中
+  NO_STORE(1 << 1);//2
 
   static boolean shouldReadFromMemoryCache(int memoryPolicy) {
     return (memoryPolicy & MemoryPolicy.NO_CACHE.index) == 0;
