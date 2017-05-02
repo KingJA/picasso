@@ -508,9 +508,9 @@ public class Picasso {
 
     void enqueueAndSubmit(Action action) {
         Object target = action.getTarget();
+        //如果这个action跟传进来的action不一样的话，那就取消掉之前的加载任务。最后将当前加载任务提交
         if (target != null && targetToAction.get(target) != action) {
             // This will also check we are on the main thread.
-            //取消这个target已有的请求
             cancelExistingRequest(target);
             targetToAction.put(target, action);
         }

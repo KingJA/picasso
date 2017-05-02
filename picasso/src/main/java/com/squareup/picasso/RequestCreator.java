@@ -732,10 +732,8 @@ public class RequestCreator {
             //检查进行缩放的尺寸
             data.resize(width, height);
         }
-
         Request request = createRequest(started);
         String requestKey = createKey(request);
-
         //是否从缓存来加载图片
         if (shouldReadFromMemoryCache(memoryPolicy)) {
             Bitmap bitmap = picasso.quickMemoryCacheCheck(requestKey);
