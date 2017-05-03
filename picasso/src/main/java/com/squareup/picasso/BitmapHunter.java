@@ -202,7 +202,7 @@ class BitmapHunter implements Runnable {
 
   Bitmap hunt() throws IOException {
     Bitmap bitmap = null;
-
+    //先从缓存获取Bitmap
     if (shouldReadFromMemoryCache(memoryPolicy)) {
       bitmap = cache.get(key);
       if (bitmap != null) {
@@ -214,18 +214,20 @@ class BitmapHunter implements Runnable {
         return bitmap;
       }
     }
-
+    //如果没命中缓存则调用load方法获取
     networkPolicy = retryCount == 0 ? NetworkPolicy.OFFLINE.index : networkPolicy;
     RequestHandler.Result result = requestHandler.load(data, networkPolicy);
+    //获取数据
     if (result != null) {
       loadedFrom = result.getLoadedFrom();
       exifOrientation = result.getExifOrientation();
+      //从数据中获取Bitmap
       bitmap = result.getBitmap();
-
       // If there was no Bitmap then we need to decode it from the stream.
       if (bitmap == null) {
         Source source = result.getSource();
         try {
+          //压缩
           bitmap = decodeStream(source, data);
         } finally {
           try {
@@ -241,6 +243,7 @@ class BitmapHunter implements Runnable {
       if (picasso.loggingEnabled) {
         log(OWNER_HUNTER, VERB_DECODED, data.logId());
       }
+      //图片变换
       stats.dispatchBitmapDecoded(bitmap);
       if (data.needsTransformation() || exifOrientation != 0) {
         synchronized (DECODE_LOCK) {
@@ -427,13 +430,14 @@ class BitmapHunter implements Runnable {
 
     // Index-based loop to avoid allocating an iterator.
     //noinspection ForLoopReplaceableByForEach
+    //迭代全部请求处理器，如果有可以处理则返回图片猎手
     for (int i = 0, count = requestHandlers.size(); i < count; i++) {
       RequestHandler requestHandler = requestHandlers.get(i);
       if (requestHandler.canHandleRequest(request)) {
         return new BitmapHunter(picasso, dispatcher, cache, stats, action, requestHandler);
       }
     }
-
+    //不能处理则返回错误
     return new BitmapHunter(picasso, dispatcher, cache, stats, action, ERRORING_HANDLER);
   }
 

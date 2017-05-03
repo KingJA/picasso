@@ -176,7 +176,9 @@ class Dispatcher {
   }
 
   void performSubmit(Action action, boolean dismissFailed) {
+    //如果是暂停任务
     if (pausedTags.contains(action.getTag())) {
+      //存入暂停任务队列
       pausedActions.put(action.getTarget(), action);
       if (action.getPicasso().loggingEnabled) {
         log(OWNER_DISPATCHER, VERB_PAUSED, action.request.logId(),
@@ -184,7 +186,7 @@ class Dispatcher {
       }
       return;
     }
-
+    //获取图片猎手，是一个Runnable的实现类
     BitmapHunter hunter = hunterMap.get(action.getKey());
     if (hunter != null) {
       hunter.attach(action);
@@ -199,6 +201,7 @@ class Dispatcher {
     }
 
     hunter = forRequest(action.getPicasso(), this, cache, stats, action);
+    //线程池来执行hunter
     hunter.future = service.submit(hunter);
     hunterMap.put(action.getKey(), hunter);
     if (dismissFailed) {
