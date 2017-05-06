@@ -1,16 +1,19 @@
 package com.example.picasso;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static java.lang.System.load;
 
@@ -48,9 +51,18 @@ final class SampleGridViewAdapter extends BaseAdapter {
                 .placeholder(R.drawable.placeholder) //
                 .error(R.drawable.error) //
                 .fit() //
-                .rotate(45)
                 .tag(context) //
-                .into(view);
+                .into(view, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, "onError: "+e.getMessage() );
+                    }
+                });
 
         return view;
     }

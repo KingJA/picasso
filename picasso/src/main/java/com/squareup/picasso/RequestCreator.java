@@ -26,6 +26,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -738,6 +739,7 @@ public class RequestCreator {
         if (shouldReadFromMemoryCache(memoryPolicy)) {
             Bitmap bitmap = picasso.quickMemoryCacheCheck(requestKey);
             if (bitmap != null) {
+                Log.e("", "有缓存: " );
                 //如果缓存中有图片则取消请求并显示图片
                 picasso.cancelRequest(target);
                 setBitmap(target, picasso.context, bitmap, MEMORY, noFade, picasso.indicatorsEnabled);
@@ -753,6 +755,7 @@ public class RequestCreator {
             }
         }
         //如果不从缓存加载图片
+        Log.e("", "网络下载: " );
         if (setPlaceholder) {
             //先设置占位符图片
             setPlaceholder(target, getPlaceholderDrawable());
